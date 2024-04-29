@@ -1,5 +1,5 @@
 const express = require('express')
-const cors =require('cors')
+const cors = require('cors')
 require('dotenv').config()
 const app = express()
 const port = 3000
@@ -35,8 +35,26 @@ async function run() {
       const cursor = paintingCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-      })
+    })
 
+    app.get('/paintings/:id', async (req, res) => {
+      const id = req.params.id;
+
+      try {
+        const query = { _id: new ObjectId(id) };
+        const painting = await paintingCollection.findOne(query);
+
+        if (!painting) {
+          return res.status(404).send('Painting not found');
+        }
+
+        res.send(painting);
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+      }
+
+    })
 
 
 
