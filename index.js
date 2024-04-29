@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
 const app = express()
-const port = 3000
+const port = 5000
 
 app.use(cors());
 app.use(express.json())
@@ -27,10 +27,10 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-
+    // await client.connect();
+    // // Send a ping to confirm a successful connection
+    // await client.db("admin").command({ ping: 1 });
+    const paintingCollection = client.db('paintingdb').collection('painting');
     app.get('/paintings', async (req, res) => {
       const cursor = paintingCollection.find();
       const result = await cursor.toArray();
@@ -53,6 +53,12 @@ async function run() {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
       }
+    })
+    app.post("/paintings", async (req, res) => {
+      const newPaintings = req.body;
+      console.log(newPaintings);
+      const result = await paintingCollection.insertOne(newPaintings);
+      res.send(result);
 
     })
 
