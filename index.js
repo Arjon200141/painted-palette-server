@@ -32,10 +32,12 @@ async function run() {
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     const paintingCollection = client.db('paintingdb').collection('painting');
+    // console.log(paintingCollection);
     app.get('/paintings', async (req, res) => {
       const cursor = paintingCollection.find();
       const result = await cursor.toArray();
       res.send(result);
+      
     })
 
     app.get('/paintings/:id', async (req, res) => {
@@ -55,6 +57,15 @@ async function run() {
         console.error("Error:", error);
         res.status(500).send("Internal Server Error");
       }
+    })
+    app.get('/subcategory/:sub',async(req,res)=>{
+      const sub =req.params.sub;
+      const cursor = paintingCollection.find();
+      const result = await cursor.toArray();
+      const filteredResult = result.filter(item=>item.subcategory_name===sub.split('_').join(' '));
+      console.log(sub);
+      res.send(filteredResult);
+
     })
 
     app.post("/paintings", async (req, res) => {
