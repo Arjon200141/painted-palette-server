@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
+const { ObjectId } = require('mongodb');
 const app = express()
 const port = 5000
 
@@ -39,6 +40,7 @@ async function run() {
 
     app.get('/paintings/:id', async (req, res) => {
       const id = req.params.id;
+      console.log(id);
 
       try {
         const query = { _id: new ObjectId(id) };
@@ -54,12 +56,20 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     })
+
     app.post("/paintings", async (req, res) => {
       const newPaintings = req.body;
       console.log(newPaintings);
       const result = await paintingCollection.insertOne(newPaintings);
       res.send(result);
 
+    })
+    app.delete("/paintings/:id",async(req,res)=>{
+      const id =req.params.id;
+      const query ={_id:new ObjectId(id)};
+      const result=await paintingCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
     })
 
 
