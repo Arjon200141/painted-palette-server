@@ -82,6 +82,27 @@ async function run() {
       res.send(result);
       console.log(result);
     })
+    app.put("/paintings/:id",async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id:new ObjectId(id)}
+      const options = {upsert:true}
+      const updatedPainting=req.body
+      const painting = {
+        $set:{
+          item_name:updatedPainting.item_name,
+          image:updatedPainting.image,
+          short_description:updatedPainting.short_description,
+          price:updatedPainting.price,
+          rating:updatedPainting.rating,
+          processing_time:updatedPainting.processing_time,
+          subcategory_name:updatedPainting.subcategory_name,
+          customization:updatedPainting.customization,
+          stock_status:updatedPainting.stock_status
+        }
+      }
+      const result = await paintingCollection.updateOne(filter,painting,options);
+      res.send(result)
+    })
 
 
 
